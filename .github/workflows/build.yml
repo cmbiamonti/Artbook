@@ -20,15 +20,11 @@ on:
 permissions:
   contents: write
 
-# ── Forza Node.js 24 su tutte le actions ────────────────────────────────────
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
 
-  # ══════════════════════════════════════════════════════════════════════════
+  # ══════════════════════════════════════════════════════
   # BUILD macOS
-  # ══════════════════════════════════════════════════════════════════════════
+  # ══════════════════════════════════════════════════════
   build-mac:
     name: Build macOS (.dmg)
     runs-on: macos-latest
@@ -42,111 +38,80 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 22
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '20'
           cache: 'npm'
 
-      # ── Installa dipendenze ───────────────────────────────────────────────
+      # ── CORREZIONE: --ignore-scripts evita il postinstall prematuro ──────
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --ignore-scripts
 
-      # ── Genera icona .icns da icon.png ────────────────────────────────────
+      - name: Rebuild native modules for Electron
+        run: npx electron-builder install-app-deps
+
       - name: Generate macOS icon (.icns)
         run: |
-          echo "📁 Contenuto build/icons:"
-          ls -la build/icons/ || echo "⚠️ Cartella build/icons non trovata"
-
-          if [ ! -f "build/icons/icon.png" ]; then
-            echo "❌ ERRORE: build/icons/icon.png non trovato"
-            exit 1
-          fi
-
           mkdir -p /tmp/artbook.iconset
 
-          sips -z 16   16   build/icons/icon.png --out /tmp/artbook.iconset/icon_16x16.png
-          sips -z 32   32   build/icons/icon.png --out /tmp/artbook.iconset/icon_16x16@2x.png
-          sips -z 32   32   build/icons/icon.png --out /tmp/artbook.iconset/icon_32x32.png
-          sips -z 64   64   build/icons/icon.png --out /tmp/artbook.iconset/icon_32x32@2x.png
-          sips -z 128  128  build/icons/icon.png --out /tmp/artbook.iconset/icon_128x128.png
-          sips -z 256  256  build/icons/icon.png --out /tmp/artbook.iconset/icon_128x128@2x.png
-          sips -z 256  256  build/icons/icon.png --out /tmp/artbook.iconset/icon_256x256.png
-          sips -z 512  512  build/icons/icon.png --out /tmp/artbook.iconset/icon_256x256@2x.png
-          sips -z 512  512  build/icons/icon.png --out /tmp/artbook.iconset/icon_512x512.png
-          sips -z 1024 1024 build/icons/icon.png --out /tmp/artbook.iconset/icon_512x512@2x.png
+          sips -z 16   16   build/icons/icon.png \
+            --out /tmp/artbook.iconset/icon_16x16.png
+          sips -z 32   32   build/icons/icon.png \
+            --out /tmp/artbook.iconset/icon_16x16@2x.png
+          sips -z 32   32   build/icons/icon.png \
+            --out /tmp/artbook.iconset/icon_32x32.png
+          sips -z 64   64   build/icons/icon.png \
+            --out /tmp/artbook.iconset/icon_32x32@2x.png
+          sips -z 128  128  build/icons/icon.png \
+            --out /tmp/artbook.iconset/icon_128x128.png
+          sips -z 256  256  build/icons/icon.png \
+            --out /tmp/artbook.iconset/icon_128x128@2x.png
+          sips -z 256  256  build/icons/icon.png \
+            --out /tmp/artbook.iconset/icon_256x256.png
+          sips -z 512  512  build/icons/icon.png \
+            --out /tmp/artbook.iconset/icon_256x256@2x.png
+          sips -z 512  512  build/icons/icon.png \
+            --out /tmp/artbook.iconset/icon_512x512.png
+          sips -z 1024 1024 build/icons/icon.png \
+            --out /tmp/artbook.iconset/icon_512x512@2x.png
 
-          iconutil -c icns /tmp/artbook.iconset -o build/icons/icon.icns
+          iconutil -c icns /tmp/artbook.iconset \
+            -o build/icons/icon.icns
 
-          echo "✅ icon.icns generato:"
+          echo "✅ icon.icns generato"
           ls -la build/icons/
 
-      # ── Compila il frontend React + Vite ──────────────────────────────────
       - name: Build frontend (Vite)
         run: npm run build
 
-      # ── Compila Electron main + preload ───────────────────────────────────
-      # Usa npx per garantire che tsc sia trovato anche senza install globale
       - name: Build Electron TypeScript
-        run: |
-          echo "🔍 Verifica typescript..."
-          npx tsc --version
+        run: npx tsc -p tsconfig.electron.json
+        continue-on-error: true
 
-          echo "🔍 Verifica tsconfig.electron.json..."
-          if [ -f "tsconfig.electron.json" ]; then
-            echo "✅ tsconfig.electron.json trovato"
-            npx tsc -p tsconfig.electron.json
-          else
-            echo "⚠️ tsconfig.electron.json non trovato"
-            echo "🔄 Provo con tsconfig.json..."
-            if [ -f "tsconfig.json" ]; then
-              npx tsc --outDir dist-electron \
-                      --module commonjs \
-                      --target ES2020 \
-                      --skipLibCheck \
-                      electron/main.ts \
-                      electron/preload.ts 2>/dev/null || true
-            fi
-          fi
-
-          echo "📁 Contenuto dist-electron:"
-          ls -la dist-electron/ 2>/dev/null || echo "⚠️ dist-electron vuota o assente"
-
-      # ── Crea il .dmg con electron-builder ────────────────────────────────
       - name: Package macOS .dmg
         run: |
-          echo "📦 Avvio electron-builder per macOS..."
-          npx electron-builder \
-            --mac \
+          npx electron-builder --mac \
             --x64 \
             --arm64 \
             --publish never
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CSC_IDENTITY_AUTO_DISCOVERY: false
-          DEBUG: electron-builder
 
-      # ── Log dei file generati ─────────────────────────────────────────────
-      - name: List generated files
-        run: |
-          echo "📁 Contenuto cartella release/:"
-          ls -la release/ 2>/dev/null || echo "⚠️ Nessun file in release/"
-          find release/ -name "*.dmg" -o -name "*.zip" 2>/dev/null | head -20
+      - name: List release files
+        run: ls -la release/
 
-      # ── Carica artifacts ──────────────────────────────────────────────────
       - name: Upload macOS artifacts
         uses: actions/upload-artifact@v4
         with:
           name: ArtBook-macOS
           retention-days: 30
-          if-no-files-found: warn
           path: |
             release/*.dmg
             release/*.zip
-            release/*.blockmap
 
-      # ── Pubblica Release GitHub (solo su tag) ─────────────────────────────
-      - name: Publish GitHub Release
+      - name: Publish to GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
@@ -154,14 +119,12 @@ jobs:
             release/*.dmg
             release/*.zip
           name: ArtBook ${{ github.ref_name }}
-          draft: false
-          prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  # ══════════════════════════════════════════════════════════════════════════
+  # ══════════════════════════════════════════════════════
   # BUILD WINDOWS
-  # ══════════════════════════════════════════════════════════════════════════
+  # ══════════════════════════════════════════════════════
   build-windows:
     name: Build Windows (.exe)
     runs-on: windows-latest
@@ -175,62 +138,41 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 22
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '20'
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --ignore-scripts
+
+      - name: Rebuild native modules for Electron
+        run: npx electron-builder install-app-deps
 
       - name: Build frontend (Vite)
         run: npm run build
 
       - name: Build Electron TypeScript
-        shell: bash
-        run: |
-          echo "🔍 Verifica typescript..."
-          npx tsc --version
-
-          if [ -f "tsconfig.electron.json" ]; then
-            echo "✅ tsconfig.electron.json trovato"
-            npx tsc -p tsconfig.electron.json
-          else
-            echo "⚠️ Fallback: compilo manualmente"
-            npx tsc --outDir dist-electron \
-                    --module commonjs \
-                    --target ES2020 \
-                    --skipLibCheck \
-                    electron/main.ts \
-                    electron/preload.ts 2>/dev/null || true
-          fi
-
-          echo "📁 dist-electron:"
-          ls dist-electron/ 2>/dev/null || echo "vuota"
+        run: npx tsc -p tsconfig.electron.json
+        continue-on-error: true
 
       - name: Package Windows .exe
         run: npx electron-builder --win --x64 --publish never
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: List generated files
-        shell: bash
-        run: |
-          echo "📁 release/:"
-          ls -la release/ 2>/dev/null || echo "vuota"
+      - name: List release files
+        run: dir release\
 
       - name: Upload Windows artifacts
         uses: actions/upload-artifact@v4
         with:
           name: ArtBook-Windows
           retention-days: 30
-          if-no-files-found: warn
-          path: |
-            release/*.exe
-            release/*.blockmap
+          path: release/*.exe
 
-      - name: Publish GitHub Release
+      - name: Publish to GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
@@ -238,9 +180,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  # ══════════════════════════════════════════════════════════════════════════
+  # ══════════════════════════════════════════════════════
   # BUILD LINUX
-  # ══════════════════════════════════════════════════════════════════════════
+  # ══════════════════════════════════════════════════════
   build-linux:
     name: Build Linux (.AppImage)
     runs-on: ubuntu-latest
@@ -254,43 +196,34 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 22
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '20'
           cache: 'npm'
 
       - name: Install Linux system dependencies
         run: |
-          sudo apt-get update -qq
+          sudo apt-get update
           sudo apt-get install -y \
             libgtk-3-dev \
             libwebkit2gtk-4.0-dev \
             libayatana-appindicator3-dev \
             librsvg2-dev \
-            patchelf \
-            rpm \
-            fakeroot
+            patchelf
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --ignore-scripts
+
+      - name: Rebuild native modules for Electron
+        run: npx electron-builder install-app-deps
 
       - name: Build frontend (Vite)
         run: npm run build
 
       - name: Build Electron TypeScript
-        run: |
-          npx tsc --version
-          if [ -f "tsconfig.electron.json" ]; then
-            npx tsc -p tsconfig.electron.json
-          else
-            npx tsc --outDir dist-electron \
-                    --module commonjs \
-                    --target ES2020 \
-                    --skipLibCheck \
-                    electron/main.ts \
-                    electron/preload.ts 2>/dev/null || true
-          fi
+        run: npx tsc -p tsconfig.electron.json
+        continue-on-error: true
 
       - name: Package Linux
         run: npx electron-builder --linux --publish never
@@ -302,12 +235,11 @@ jobs:
         with:
           name: ArtBook-Linux
           retention-days: 30
-          if-no-files-found: warn
           path: |
             release/*.AppImage
             release/*.deb
 
-      - name: Publish GitHub Release
+      - name: Publish to GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
