@@ -1,0 +1,96 @@
+{
+  "name": "artbook",
+  "version": "1.0.0",
+  "description": "ArtBook — Catalogo digitale per collezioni d'arte",
+  "author": {
+    "name": "La Stanza dell'Arte",
+    "email": "info@lastanzadellarte.com",
+    "url": "https://lastanzadellarte.com"
+  },
+  "license": "UNLICENSED",
+  "main": "dist-electron/main.js",
+
+  "scripts": {
+    "dev":                "vite",
+    "build":              "tsc && vite build",
+    "build:electron":     "tsc -p tsconfig.electron.json",
+    "electron:dev":       "electron .",
+    "electron:build":     "npm run build && electron-builder",
+    "electron:build:win": "npm run build && electron-builder --win",
+    "electron:build:mac": "npm run build && electron-builder --mac",
+    "postinstall":        "electron-builder install-app-deps"
+  },
+
+  "build": {
+    "appId":       "com.lastanzadellarte.artbook",
+    "productName": "ArtBook",
+    "copyright":   "© 2025 La Stanza dell'Arte",
+
+    "asar": true,
+
+    "directories": {
+      "buildResources": "build",
+      "output":         "release"
+    },
+
+    "files": [
+      "dist/**/*",
+      "dist-electron/**/*",
+      "build/icons/*",
+      "package.json"
+    ],
+
+    "extraResources": [
+      {
+        "from": "build/icons",
+        "to":   "icons"
+      }
+    ],
+
+    "mac": {
+      "appId":     "com.lastanzadellarte.artbook",
+      "category":  "public.app-category.productivity",
+      "icon":      "build/icons/icon.icns",
+      "darkModeSupport":   true,
+      "hardenedRuntime":   true,
+      "gatekeeperAssess":  false,
+      "entitlements":          "build/entitlements.mac.plist",
+      "entitlementsInherit":   "build/entitlements.mac.plist",
+      "target": [
+        { "target": "dmg", "arch": ["x64", "arm64"] },
+        { "target": "zip", "arch": ["x64", "arm64"] }
+      ]
+    },
+
+    "dmg": {
+      "title":   "${productName} ${version}",
+      "window":  { "width": 540, "height": 380 },
+      "contents": [
+        { "x": 150, "y": 185, "type": "file" },
+        { "x": 390, "y": 185, "type": "link", "path": "/Applications" }
+      ]
+    },
+
+    "win": {
+      "icon":   "build/icons/icon.ico",
+      "target": [
+        { "target": "nsis", "arch": ["x64"] }
+      ]
+    },
+
+    "nsis": {
+      "oneClick":    false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut":  true,
+      "createStartMenuShortcut": true,
+      "installerIcon":       "build/icons/icon.ico",
+      "uninstallerIcon":     "build/icons/icon.ico"
+    },
+
+    "linux": {
+      "icon":     "build/icons",
+      "target":   ["AppImage", "deb"],
+      "category": "Office"
+    }
+  }
+}

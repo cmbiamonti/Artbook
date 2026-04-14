@@ -1,0 +1,33 @@
+# Dipendenze
+node_modules/
+
+# Output build — NON caricare in GitHub
+dist/
+dist-electron/
+release/
+out/
+
+# File di sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/settings.json
+.idea/
+
+# Environment
+.env
+.env.local
+.env.production
+
+# Log
+*.log
+npm-debug.log*
+
+# Cache
+.cache/
+.parcel-cache/
+
+# Electron builder cache
+app-builder-bin/

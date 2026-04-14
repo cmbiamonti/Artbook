@@ -1,0 +1,259 @@
+name: Build ArtBook — Multi Platform
+
+on:
+  # Si attiva quando spingi un tag tipo v1.0.0
+  push:
+    tags:
+      - 'v*'
+  # Permette avvio manuale dalla pagina GitHub Actions
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: 'Piattaforma da compilare'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - mac
+          - windows
+          - linux
+
+# ── Permessi per caricare i file nella Release GitHub ──────────────────────────
+permissions:
+  contents: write
+
+jobs:
+
+  # ════════════════════════════════════════════════════════
+  # BUILD macOS — runner Apple Silicon hosted da GitHub
+  # ════════════════════════════════════════════════════════
+  build-mac:
+    name: Build macOS (.dmg)
+    runs-on: macos-latest
+    if: |
+      github.event_name == 'push' ||
+      github.event.inputs.platform == 'all' ||
+      github.event.inputs.platform == 'mac'
+
+    steps:
+
+      # 1. Scarica il codice dal repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Installa Node.js 20
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # 3. Installa le dipendenze npm
+      - name: Install dependencies
+        run: npm ci
+
+      # 4. Genera icon.icns da icon.png
+      - name: Generate macOS icon (.icns)
+        run: |
+          mkdir -p /tmp/artbook.iconset
+
+          sips -z 16   16   build/icons/icon.png \
+            --out /tmp/artbook.iconset/icon_16x16.png
+          sips -z 32   32   build/icons/icon.png \
+            --out /tmp/artbook.iconset/icon_16x16@2x.png
+          sips -z 32   32   build/icons/icon.png \
+            --out /tmp/artbook.iconset/icon_32x32.png
+          sips -z 64   64   build/icons/icon.png \
+            --out /tmp/artbook.iconset/icon_32x32@2x.png
+          sips -z 128  128  build/icons/icon.png \
+            --out /tmp/artbook.iconset/icon_128x128.png
+          sips -z 256  256  build/icons/icon.png \
+            --out /tmp/artbook.iconset/icon_128x128@2x.png
+          sips -z 256  256  build/icons/icon.png \
+            --out /tmp/artbook.iconset/icon_256x256.png
+          sips -z 512  512  build/icons/icon.png \
+            --out /tmp/artbook.iconset/icon_256x256@2x.png
+          sips -z 512  512  build/icons/icon.png \
+            --out /tmp/artbook.iconset/icon_512x512.png
+          sips -z 1024 1024 build/icons/icon.png \
+            --out /tmp/artbook.iconset/icon_512x512@2x.png
+
+          iconutil -c icns /tmp/artbook.iconset \
+            -o build/icons/icon.icns
+
+          echo "✅ icon.icns generato"
+          ls -la build/icons/
+
+      # 5. Compila TypeScript + Vite (frontend)
+      - name: Build frontend (Vite)
+        run: npm run build
+
+      # 6. Compila TypeScript Electron (main + preload)
+      - name: Build Electron
+        run: npx tsc -p tsconfig.electron.json
+        continue-on-error: true
+
+      # 7. Crea il .dmg con electron-builder
+      - name: Package macOS .dmg
+        run: |
+          npx electron-builder --mac \
+            --x64 \
+            --arm64 \
+            --publish never
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Build non firmata — nessun certificato Apple richiesto
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+
+      # 8. Mostra i file generati
+      - name: List release files
+        run: ls -la release/
+
+      # 9. Carica i file come artifact scaricabile
+      - name: Upload macOS artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ArtBook-macOS
+          retention-days: 30
+          path: |
+            release/*.dmg
+            release/*.zip
+            release/*.blockmap
+
+      # 10. Se è un tag, pubblica nella GitHub Release
+      - name: Publish to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            release/*.dmg
+            release/*.zip
+          name: ArtBook ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ════════════════════════════════════════════════════════
+  # BUILD WINDOWS — runner Windows hosted da GitHub
+  # ════════════════════════════════════════════════════════
+  build-windows:
+    name: Build Windows (.exe)
+    runs-on: windows-latest
+    if: |
+      github.event_name == 'push' ||
+      github.event.inputs.platform == 'all' ||
+      github.event.inputs.platform == 'windows'
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build frontend (Vite)
+        run: npm run build
+
+      - name: Build Electron
+        run: npx tsc -p tsconfig.electron.json
+        continue-on-error: true
+
+      - name: Package Windows .exe
+        run: npx electron-builder --win --x64 --publish never
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: List release files
+        run: dir release\
+
+      - name: Upload Windows artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ArtBook-Windows
+          retention-days: 30
+          path: |
+            release/*.exe
+            release/*.blockmap
+
+      - name: Publish to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release/*.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ════════════════════════════════════════════════════════
+  # BUILD LINUX — runner Ubuntu hosted da GitHub
+  # ════════════════════════════════════════════════════════
+  build-linux:
+    name: Build Linux (.AppImage)
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'push' ||
+      github.event.inputs.platform == 'all' ||
+      github.event.inputs.platform == 'linux'
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Linux dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libgtk-3-dev \
+            libwebkit2gtk-4.0-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            patchelf
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build frontend (Vite)
+        run: npm run build
+
+      - name: Build Electron
+        run: npx tsc -p tsconfig.electron.json
+        continue-on-error: true
+
+      - name: Package Linux
+        run: npx electron-builder --linux --publish never
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Linux artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ArtBook-Linux
+          retention-days: 30
+          path: |
+            release/*.AppImage
+            release/*.deb
+
+      - name: Publish to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            release/*.AppImage
+            release/*.deb
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

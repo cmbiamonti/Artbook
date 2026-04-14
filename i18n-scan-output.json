@@ -1,0 +1,596 @@
+{
+  "generatedAt": "2026-03-28T17:54:02.430Z",
+  "srcDir": "C:\\Users\\cmbia\\OneDrive\\Desktop\\Progetto La Stanza dell'Arte\\ARTBOOK_PC Eseguibile\\ArtBook V1.0_ENG\\artbook_V1.0_ENG\\src",
+  "totalFiles": 32,
+  "filesWithStrings": 12,
+  "totalStrings": 51,
+  "byFile": {
+    "components\\Artworks\\ArtworkDetail.tsx": [
+      {
+        "string": "Artwork non trovato",
+        "file": "components\\Artworks\\ArtworkDetail.tsx",
+        "line": 62,
+        "lineContent": "<p className=\"text-gray-500 text-lg\">Artwork non trovato</p>",
+        "category": "jsx_text",
+        "patternName": "JSX text content",
+        "suggestedKey": "components\\_artworks\\_artwork_detail.artwork_non_trovato",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "Torna alla Dashboard",
+        "file": "components\\Artworks\\ArtworkDetail.tsx",
+        "line": 126,
+        "lineContent": "<span>Torna alla Dashboard</span>",
+        "category": "jsx_text",
+        "patternName": "JSX text content",
+        "suggestedKey": "components\\_artworks\\_artwork_detail.torna_alla_dashboard",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "Modifica",
+        "file": "components\\Artworks\\ArtworkDetail.tsx",
+        "line": 143,
+        "lineContent": "<span className=\"hidden sm:inline\">Modifica</span>",
+        "category": "jsx_text",
+        "patternName": "JSX text content",
+        "suggestedKey": "components\\_artworks\\_artwork_detail.modifica",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "Elimina",
+        "file": "components\\Artworks\\ArtworkDetail.tsx",
+        "line": 151,
+        "lineContent": "<span className=\"hidden sm:inline\">Elimina</span>",
+        "category": "jsx_text",
+        "patternName": "JSX text content",
+        "suggestedKey": "components\\_artworks\\_artwork_detail.elimina",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "Con cornice",
+        "file": "components\\Artworks\\ArtworkDetail.tsx",
+        "line": 215,
+        "lineContent": "<span>Con cornice</span>",
+        "category": "jsx_text",
+        "patternName": "JSX text content",
+        "suggestedKey": "components\\_artworks\\_artwork_detail.con_cornice",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "In vendita",
+        "file": "components\\Artworks\\ArtworkDetail.tsx",
+        "line": 222,
+        "lineContent": "<span>In vendita</span>",
+        "category": "jsx_text",
+        "patternName": "JSX text content",
+        "suggestedKey": "components\\_artworks\\_artwork_detail.in_vendita",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "Certificato di Autenticità:",
+        "file": "components\\Artworks\\ArtworkDetail.tsx",
+        "line": 324,
+        "lineContent": "<span className=\"font-medium\">Certificato di Autenticità:</span>",
+        "category": "jsx_text",
+        "patternName": "JSX text content",
+        "suggestedKey": "components\\_artworks\\_artwork_detail.certificato_di_autenticita",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "Firma dell'Artista:",
+        "file": "components\\Artworks\\ArtworkDetail.tsx",
+        "line": 343,
+        "lineContent": "<span className=\"font-medium\">Firma dell'Artista:</span>",
+        "category": "jsx_text",
+        "patternName": "JSX text content",
+        "suggestedKey": "components\\_artworks\\_artwork_detail.firma_dellartista",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "Stato di Conservazione:",
+        "file": "components\\Artworks\\ArtworkDetail.tsx",
+        "line": 351,
+        "lineContent": "<span className=\"font-medium\">Stato di Conservazione:</span>",
+        "category": "jsx_text",
+        "patternName": "JSX text content",
+        "suggestedKey": "components\\_artworks\\_artwork_detail.stato_di_conservazione",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "Numero di Edizione:",
+        "file": "components\\Artworks\\ArtworkDetail.tsx",
+        "line": 366,
+        "lineContent": "<span className=\"font-medium\">Numero di Edizione:</span>",
+        "category": "jsx_text",
+        "patternName": "JSX text content",
+        "suggestedKey": "components\\_artworks\\_artwork_detail.numero_di_edizione",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "Prezzo di Acquisto:",
+        "file": "components\\Artworks\\ArtworkDetail.tsx",
+        "line": 439,
+        "lineContent": "<span className=\"font-medium\">Prezzo di Acquisto:</span>",
+        "category": "jsx_text",
+        "patternName": "JSX text content",
+        "suggestedKey": "components\\_artworks\\_artwork_detail.prezzo_di_acquisto",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "Disponibile per Vendita",
+        "file": "components\\Artworks\\ArtworkDetail.tsx",
+        "line": 466,
+        "lineContent": "<span>Disponibile per Vendita</span>",
+        "category": "jsx_text",
+        "patternName": "JSX text content",
+        "suggestedKey": "components\\_artworks\\_artwork_detail.disponibile_per_vendita",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "Creato il",
+        "file": "components\\Artworks\\ArtworkDetail.tsx",
+        "line": 512,
+        "lineContent": "<p className=\"font-medium text-gray-500\">Creato il</p>",
+        "category": "jsx_text",
+        "patternName": "JSX text content",
+        "suggestedKey": "components\\_artworks\\_artwork_detail.creato_il",
+        "alreadyTranslated": false
+      }
+    ],
+    "components\\Artworks\\ArtworkForm.tsx": [
+      {
+        "string": "Artista",
+        "file": "components\\Artworks\\ArtworkForm.tsx",
+        "line": 288,
+        "lineContent": "<label className=\"label\">Artista</label>",
+        "category": "jsx_text",
+        "patternName": "JSX text content",
+        "suggestedKey": "components\\_artworks\\_artwork_form.artista",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "Nessun artista",
+        "file": "components\\Artworks\\ArtworkForm.tsx",
+        "line": 311,
+        "lineContent": "<option value=\"\">Nessun artista</option>",
+        "category": "jsx_text",
+        "patternName": "JSX text content",
+        "suggestedKey": "components\\_artworks\\_artwork_form.nessun_artista",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "Non specificato",
+        "file": "components\\Artworks\\ArtworkForm.tsx",
+        "line": 491,
+        "lineContent": "<option value=\"\">Non specificato</option>",
+        "category": "jsx_text",
+        "patternName": "JSX text content",
+        "suggestedKey": "components\\_artworks\\_artwork_form.non_specificato",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "Non verificabile",
+        "file": "components\\Artworks\\ArtworkForm.tsx",
+        "line": 525,
+        "lineContent": "<option value=\"unverifiable\">Non verificabile</option>",
+        "category": "jsx_text",
+        "patternName": "JSX text content",
+        "suggestedKey": "components\\_artworks\\_artwork_form.non_verificabile",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "Da restaurare",
+        "file": "components\\Artworks\\ArtworkForm.tsx",
+        "line": 542,
+        "lineContent": "<option value=\"needs_restoration\">Da restaurare</option>",
+        "category": "jsx_text",
+        "patternName": "JSX text content",
+        "suggestedKey": "components\\_artworks\\_artwork_form.da_restaurare",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "In prestito",
+        "file": "components\\Artworks\\ArtworkForm.tsx",
+        "line": 590,
+        "lineContent": "<option value=\"on_loan\">In prestito</option>",
+        "category": "jsx_text",
+        "patternName": "JSX text content",
+        "suggestedKey": "components\\_artworks\\_artwork_form.in_prestito",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "In mostra",
+        "file": "components\\Artworks\\ArtworkForm.tsx",
+        "line": 591,
+        "lineContent": "<option value=\"on_display\">In mostra</option>",
+        "category": "jsx_text",
+        "patternName": "JSX text content",
+        "suggestedKey": "components\\_artworks\\_artwork_form.in_mostra",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "Inserisci il titolo dell'opera",
+        "file": "components\\Artworks\\ArtworkForm.tsx",
+        "line": 278,
+        "lineContent": "placeholder=\"Inserisci il titolo dell'opera\"",
+        "category": "attribute",
+        "patternName": "placeholder",
+        "suggestedKey": "components\\_artworks\\_artwork_form.inserisci_il_titolo_dell'opera",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "Es: Olio su tela",
+        "file": "components\\Artworks\\ArtworkForm.tsx",
+        "line": 397,
+        "lineContent": "placeholder=\"Es: Olio su tela\"",
+        "category": "attribute",
+        "patternName": "placeholder",
+        "suggestedKey": "components\\_artworks\\_artwork_form.es_olio_su_tela",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "Anno non valido",
+        "file": "components\\Artworks\\ArtworkForm.tsx",
+        "line": 381,
+        "lineContent": "min: { value: 1, message: 'Anno non valido' },",
+        "category": "ts_string",
+        "patternName": "TS string variable",
+        "suggestedKey": "components\\_artworks\\_artwork_form.anno_non_valido",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "Anno non può essere futuro",
+        "file": "components\\Artworks\\ArtworkForm.tsx",
+        "line": 382,
+        "lineContent": "max: { value: new Date().getFullYear(), message: 'Anno non può essere futuro' }",
+        "category": "ts_string",
+        "patternName": "TS string variable",
+        "suggestedKey": "components\\_artworks\\_artwork_form.anno_non_puo_essere",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "Il valore deve essere positivo",
+        "file": "components\\Artworks\\ArtworkForm.tsx",
+        "line": 422,
+        "lineContent": "min: { value: 0, message: 'Il valore deve essere positivo' }",
+        "category": "ts_string",
+        "patternName": "TS string variable",
+        "suggestedKey": "components\\_artworks\\_artwork_form.il_valore_deve_essere",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "Artwork creato ma senza ID",
+        "file": "components\\Artworks\\ArtworkForm.tsx",
+        "line": 166,
+        "lineContent": "throw new Error('Artwork creato ma senza ID');",
+        "category": "error",
+        "patternName": "throw Error message",
+        "suggestedKey": "components\\_artworks\\_artwork_form.artwork_creato_ma_senza",
+        "alreadyTranslated": false
+      }
+    ],
+    "components\\Artworks\\FilterBar.tsx": [
+      {
+        "string": "Tutte le categorie",
+        "file": "components\\Artworks\\FilterBar.tsx",
+        "line": 108,
+        "lineContent": "<option value=\"\">Tutte le categorie</option>",
+        "category": "jsx_text",
+        "patternName": "JSX text content",
+        "suggestedKey": "components\\_artworks\\_filter_bar.tutte_le_categorie",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "Tutte le sottocategorie",
+        "file": "components\\Artworks\\FilterBar.tsx",
+        "line": 126,
+        "lineContent": "<option value=\"\">Tutte le sottocategorie</option>",
+        "category": "jsx_text",
+        "patternName": "JSX text content",
+        "suggestedKey": "components\\_artworks\\_filter_bar.tutte_le_sottocategorie",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "Artista",
+        "file": "components\\Artworks\\FilterBar.tsx",
+        "line": 138,
+        "lineContent": "<label className=\"label\">Artista</label>",
+        "category": "jsx_text",
+        "patternName": "JSX text content",
+        "suggestedKey": "components\\_artworks\\_filter_bar.artista",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "Tutti gli artisti",
+        "file": "components\\Artworks\\FilterBar.tsx",
+        "line": 144,
+        "lineContent": "<option value=\"\">Tutti gli artisti</option>",
+        "category": "jsx_text",
+        "patternName": "JSX text content",
+        "suggestedKey": "components\\_artworks\\_filter_bar.tutti_gli_artisti",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "Anno Da",
+        "file": "components\\Artworks\\FilterBar.tsx",
+        "line": 155,
+        "lineContent": "<label className=\"label\">Anno Da</label>",
+        "category": "jsx_text",
+        "patternName": "JSX text content",
+        "suggestedKey": "components\\_artworks\\_filter_bar.anno_da",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "Cerca per titolo o artista...",
+        "file": "components\\Artworks\\FilterBar.tsx",
+        "line": 73,
+        "lineContent": "placeholder=\"Cerca per titolo o artista...\"",
+        "category": "attribute",
+        "patternName": "placeholder",
+        "suggestedKey": "components\\_artworks\\_filter_bar.cerca_per_titolo_o",
+        "alreadyTranslated": false
+      }
+    ],
+    "components\\Artworks\\ImageGallery.tsx": [
+      {
+        "string": "Immagine non disponibile",
+        "file": "components\\Artworks\\ImageGallery.tsx",
+        "line": 461,
+        "lineContent": "<p className=\"text-gray-500\">Immagine non disponibile</p>",
+        "category": "jsx_text",
+        "patternName": "JSX text content",
+        "suggestedKey": "components\\_artworks\\_image_gallery.immagine_non_disponibile",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "Imposta come principale",
+        "file": "components\\Artworks\\ImageGallery.tsx",
+        "line": 389,
+        "lineContent": "title=\"Imposta come principale\"",
+        "category": "attribute",
+        "patternName": "title attribute",
+        "suggestedKey": "components\\_artworks\\_image_gallery.imposta_come_principale",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "Elimina",
+        "file": "components\\Artworks\\ImageGallery.tsx",
+        "line": 401,
+        "lineContent": "title=\"Elimina\"",
+        "category": "attribute",
+        "patternName": "title attribute",
+        "suggestedKey": "components\\_artworks\\_image_gallery.elimina",
+        "alreadyTranslated": false
+      }
+    ],
+    "components\\Artworks\\ImageManager.tsx": [
+      {
+        "string": "Imposta come principale",
+        "file": "components\\Artworks\\ImageManager.tsx",
+        "line": 280,
+        "lineContent": "title=\"Imposta come principale\"",
+        "category": "attribute",
+        "patternName": "title attribute",
+        "suggestedKey": "components\\_artworks\\_image_manager.imposta_come_principale",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "Sposta su",
+        "file": "components\\Artworks\\ImageManager.tsx",
+        "line": 291,
+        "lineContent": "title=\"Sposta su\"",
+        "category": "attribute",
+        "patternName": "title attribute",
+        "suggestedKey": "components\\_artworks\\_image_manager.sposta_su",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "Sposta giù",
+        "file": "components\\Artworks\\ImageManager.tsx",
+        "line": 301,
+        "lineContent": "title=\"Sposta giù\"",
+        "category": "attribute",
+        "patternName": "title attribute",
+        "suggestedKey": "components\\_artworks\\_image_manager.sposta_giu",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "Elimina",
+        "file": "components\\Artworks\\ImageManager.tsx",
+        "line": 310,
+        "lineContent": "title=\"Elimina\"",
+        "category": "attribute",
+        "patternName": "title attribute",
+        "suggestedKey": "components\\_artworks\\_image_manager.elimina",
+        "alreadyTranslated": false
+      }
+    ],
+    "components\\Layout\\Navbar.tsx": [
+      {
+        "string": "Nuovo Artwork",
+        "file": "components\\Layout\\Navbar.tsx",
+        "line": 70,
+        "lineContent": "<span>Nuovo Artwork</span>",
+        "category": "jsx_text",
+        "patternName": "JSX text content",
+        "suggestedKey": "components\\_layout\\_navbar.nuovo_artwork",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "Importa artworks da file CSV",
+        "file": "components\\Layout\\Navbar.tsx",
+        "line": 56,
+        "lineContent": "title=\"Importa artworks da file CSV\"",
+        "category": "attribute",
+        "patternName": "title attribute",
+        "suggestedKey": "components\\_layout\\_navbar.importa_artworks_da_file",
+        "alreadyTranslated": false
+      }
+    ],
+    "hooks\\useCSVImport.ts": [
+      {
+        "string": "CSV deve contenere almeno le colonne: title, category",
+        "file": "hooks\\useCSVImport.ts",
+        "line": 31,
+        "lineContent": "throw new Error('CSV deve contenere almeno le colonne: title, category');",
+        "category": "error",
+        "patternName": "throw Error message",
+        "suggestedKey": "hooks\\use_csv_import.csv_deve_contenere_almeno",
+        "alreadyTranslated": false
+      }
+    ],
+    "hooks\\useElectron.ts": [
+      {
+        "string": "Errore durante il caricamento dell'immagine",
+        "file": "hooks\\useElectron.ts",
+        "line": 122,
+        "lineContent": "throw new Error('Errore durante il caricamento dell\\'immagine');",
+        "category": "error",
+        "patternName": "throw Error message",
+        "suggestedKey": "hooks\\use_electron.errore_durante_il_caricamento",
+        "alreadyTranslated": false
+      }
+    ],
+    "pages\\Dashboard.tsx": [
+      {
+        "string": "Gestisci la tua collezione d'arte",
+        "file": "pages\\Dashboard.tsx",
+        "line": 72,
+        "lineContent": "<p className=\"text-gray-600 mt-1\">Gestisci la tua collezione d'arte</p>",
+        "category": "jsx_text",
+        "patternName": "JSX text content",
+        "suggestedKey": "pages\\_dashboard.gestisci_la_tua_collezione",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "Lista",
+        "file": "pages\\Dashboard.tsx",
+        "line": 182,
+        "lineContent": "<span className=\"hidden sm:inline font-medium\">Lista</span>",
+        "category": "jsx_text",
+        "patternName": "JSX text content",
+        "suggestedKey": "pages\\_dashboard.lista",
+        "alreadyTranslated": false
+      }
+    ],
+    "pages\\EditArtwork.tsx": [
+      {
+        "string": "Artwork non trovato",
+        "file": "pages\\EditArtwork.tsx",
+        "line": 45,
+        "lineContent": "<p className=\"text-gray-500 text-lg\">Artwork non trovato</p>",
+        "category": "jsx_text",
+        "patternName": "JSX text content",
+        "suggestedKey": "pages\\_edit_artwork.artwork_non_trovato",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "Torna ai Dettagli",
+        "file": "pages\\EditArtwork.tsx",
+        "line": 62,
+        "lineContent": "<span>Torna ai Dettagli</span>",
+        "category": "jsx_text",
+        "patternName": "JSX text content",
+        "suggestedKey": "pages\\_edit_artwork.torna_ai_dettagli",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "Modifica Opera",
+        "file": "pages\\EditArtwork.tsx",
+        "line": 64,
+        "lineContent": "<h1 className=\"text-3xl font-bold text-gray-900\">Modifica Opera</h1>",
+        "category": "jsx_text",
+        "patternName": "JSX text content",
+        "suggestedKey": "pages\\_edit_artwork.modifica_opera",
+        "alreadyTranslated": false
+      }
+    ],
+    "pages\\NewArtwork.tsx": [
+      {
+        "string": "Torna alla Dashboard",
+        "file": "pages\\NewArtwork.tsx",
+        "line": 35,
+        "lineContent": "<span>Torna alla Dashboard</span>",
+        "category": "jsx_text",
+        "patternName": "JSX text content",
+        "suggestedKey": "pages\\_new_artwork.torna_alla_dashboard",
+        "alreadyTranslated": false
+      },
+      {
+        "string": "Nuova Opera d'Arte",
+        "file": "pages\\NewArtwork.tsx",
+        "line": 37,
+        "lineContent": "<h1 className=\"text-3xl font-bold text-gray-900\">Nuova Opera d'Arte</h1>",
+        "category": "jsx_text",
+        "patternName": "JSX text content",
+        "suggestedKey": "pages\\_new_artwork.nuova_opera_darte",
+        "alreadyTranslated": false
+      }
+    ],
+    "utils\\categories.ts": [
+      {
+        "string": "Non specificato",
+        "file": "utils\\categories.ts",
+        "line": 99,
+        "lineContent": "{ value: 'non_specificato', label: 'Non specificato' },",
+        "category": "ts_string",
+        "patternName": "TS string variable",
+        "suggestedKey": "utils\\categories.non_specificato",
+        "alreadyTranslated": false
+      }
+    ]
+  },
+  "draftTranslationIt": {
+    "components\\_artworks\\_artwork_detail.artwork_non_trovato": "Artwork non trovato",
+    "components\\_artworks\\_artwork_detail.torna_alla_dashboard": "Torna alla Dashboard",
+    "components\\_artworks\\_artwork_detail.modifica": "Modifica",
+    "components\\_artworks\\_artwork_detail.elimina": "Elimina",
+    "components\\_artworks\\_artwork_detail.con_cornice": "Con cornice",
+    "components\\_artworks\\_artwork_detail.in_vendita": "In vendita",
+    "components\\_artworks\\_artwork_detail.certificato_di_autenticita": "Certificato di Autenticità:",
+    "components\\_artworks\\_artwork_detail.firma_dellartista": "Firma dell'Artista:",
+    "components\\_artworks\\_artwork_detail.stato_di_conservazione": "Stato di Conservazione:",
+    "components\\_artworks\\_artwork_detail.numero_di_edizione": "Numero di Edizione:",
+    "components\\_artworks\\_artwork_detail.prezzo_di_acquisto": "Prezzo di Acquisto:",
+    "components\\_artworks\\_artwork_detail.disponibile_per_vendita": "Disponibile per Vendita",
+    "components\\_artworks\\_artwork_detail.creato_il": "Creato il",
+    "components\\_artworks\\_artwork_form.artista": "Artista",
+    "components\\_artworks\\_artwork_form.nessun_artista": "Nessun artista",
+    "components\\_artworks\\_artwork_form.non_specificato": "Non specificato",
+    "components\\_artworks\\_artwork_form.non_verificabile": "Non verificabile",
+    "components\\_artworks\\_artwork_form.da_restaurare": "Da restaurare",
+    "components\\_artworks\\_artwork_form.in_prestito": "In prestito",
+    "components\\_artworks\\_artwork_form.in_mostra": "In mostra",
+    "components\\_artworks\\_artwork_form.inserisci_il_titolo_dell": "Inserisci il titolo dell'opera",
+    "components\\_artworks\\_artwork_form.es_olio_su_tela": "Es: Olio su tela",
+    "components\\_artworks\\_artwork_form.anno_non_valido": "Anno non valido",
+    "components\\_artworks\\_artwork_form.anno_non_puo_essere": "Anno non può essere futuro",
+    "components\\_artworks\\_artwork_form.il_valore_deve_essere": "Il valore deve essere positivo",
+    "components\\_artworks\\_artwork_form.artwork_creato_ma_senza": "Artwork creato ma senza ID",
+    "components\\_artworks\\_filter_bar.tutte_le_categorie": "Tutte le categorie",
+    "components\\_artworks\\_filter_bar.tutte_le_sottocategorie": "Tutte le sottocategorie",
+    "components\\_artworks\\_filter_bar.artista": "Artista",
+    "components\\_artworks\\_filter_bar.tutti_gli_artisti": "Tutti gli artisti",
+    "components\\_artworks\\_filter_bar.anno_da": "Anno Da",
+    "components\\_artworks\\_filter_bar.cerca_per_titolo_o": "Cerca per titolo o artista...",
+    "components\\_artworks\\_image_gallery.immagine_non_disponibile": "Immagine non disponibile",
+    "components\\_artworks\\_image_gallery.imposta_come_principale": "Imposta come principale",
+    "components\\_artworks\\_image_gallery.elimina": "Elimina",
+    "components\\_artworks\\_image_manager.imposta_come_principale": "Imposta come principale",
+    "components\\_artworks\\_image_manager.sposta_su": "Sposta su",
+    "components\\_artworks\\_image_manager.sposta_giu": "Sposta giù",
+    "components\\_artworks\\_image_manager.elimina": "Elimina",
+    "components\\_layout\\_navbar.nuovo_artwork": "Nuovo Artwork",
+    "components\\_layout\\_navbar.importa_artworks_da_file": "Importa artworks da file CSV",
+    "hooks\\use_csv_import.csv_deve_contenere_almeno": "CSV deve contenere almeno le colonne: title, category",
+    "hooks\\use_electron.errore_durante_il_caricamento": "Errore durante il caricamento dell'immagine",
+    "pages\\_dashboard.gestisci_la_tua_collezione": "Gestisci la tua collezione d'arte",
+    "pages\\_dashboard.lista": "Lista",
+    "pages\\_edit_artwork.artwork_non_trovato": "Artwork non trovato",
+    "pages\\_edit_artwork.torna_ai_dettagli": "Torna ai Dettagli",
+    "pages\\_edit_artwork.modifica_opera": "Modifica Opera",
+    "pages\\_new_artwork.torna_alla_dashboard": "Torna alla Dashboard",
+    "pages\\_new_artwork.nuova_opera_darte": "Nuova Opera d'Arte",
+    "utils\\categories.non_specificato": "Non specificato"
+  }
+}

@@ -1,0 +1,82 @@
+appId: com.craftbook.app
+productName: CraftBook
+copyright: Copyright © 2025 CraftBook
+
+directories:
+  output: release
+  buildResources: assets
+
+files:
+  - dist/**/*
+  - dist-electron/**/*
+  - "!node_modules/**/*"
+
+# ── macOS ──────────────────────────────────────────────────────────
+mac:
+  target:
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+  icon: assets/icon.icns
+  category: public.app-category.productivity
+  darkModeSupport: true
+  hardenedRuntime: true
+  gatekeeperAssess: false
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist
+
+dmg:
+  title: "CraftBook ${version}"
+  artifactName: "CraftBook-${version}-${arch}.dmg"
+  contents:
+    - x: 130
+      y: 220
+    - x: 410
+      y: 220
+      type: link
+      path: /Applications
+  window:
+    width: 540
+    height: 380
+  background: assets/dmg-background.png
+
+# ── Windows ────────────────────────────────────────────────────────
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  icon: assets/icon.ico
+  artifactName: "CraftBook-Setup-${version}.exe"
+
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: CraftBook
+  installerIcon: assets/icon.ico
+  uninstallerIcon: assets/icon.ico
+
+# ── Linux ──────────────────────────────────────────────────────────
+linux:
+  target:
+    - target: AppImage
+      arch:
+        - x64
+  icon: assets/icon.png
+  category: Office
+
+# ── Extra resources (native modules) ──────────────────────────────
+extraResources:
+  - from: node_modules/better-sqlite3/build/Release
+    to: better-sqlite3/build/Release
+    filter:
+      - "*.node"
+
+# ── Publish (opzionale - per auto-update) ─────────────────────────
+publish:
+  provider: github
+  owner: YOUR_GITHUB_USERNAME
+  repo: craftbook

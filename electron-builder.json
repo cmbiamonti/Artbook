@@ -1,0 +1,40 @@
+{
+  "appId": "com.artbook.portable",
+  "productName": "ArtBook-Portable",
+  "directories": {
+    "output": "release"
+  },
+  "files": [
+    "dist/**/*",
+    "dist-electron/**/*",
+    "package.json"
+  ],
+  "extraResources": [
+    {
+      "from": "data",
+      "to": "data",
+      "filter": ["**/*"]
+    },
+    {
+      "from": "images",
+      "to": "images",
+      "filter": ["**/*"]
+    }
+  ],
+  "asar": true,
+  "asarUnpack": [
+    "**/*.node"
+  ],
+  "win": {
+    "target": [
+      {
+        "target": "portable",
+        "arch": ["x64"]
+      }
+    ],
+    "artifactName": "ArtBook-Portable.exe"
+  },
+  "portable": {
+    "artifactName": "ArtBook-Portable.exe"
+  }
+}
