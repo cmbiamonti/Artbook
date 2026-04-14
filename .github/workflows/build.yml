@@ -17,10 +17,6 @@ on:
           - windows
           - linux
 
-# ── Opt-in esplicito a Node.js 24 ────────────────────────────────────────────
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 permissions:
   contents: write
 
@@ -40,12 +36,12 @@ jobs:
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@v4        # versione più recente
+        uses: actions/checkout@v4
 
-      - name: Setup Node.js 22 LTS
-        uses: actions/setup-node@v4      # versione più recente
+      - name: Setup Node.js 24
+        uses: actions/setup-node@v4
         with:
-          node-version: '22'             # LTS stabile, supportato a lungo
+          node-version: '24'        # ← aggiornato da 20 a 24
           cache: 'npm'
 
       - name: Install dependencies
@@ -85,7 +81,7 @@ jobs:
       - name: Build frontend (Vite)
         run: npm run build
 
-      - name: Build Electron TypeScript
+      - name: Build Electron process
         run: npx tsc -p tsconfig.electron.json
         continue-on-error: true
 
@@ -110,6 +106,7 @@ jobs:
           path: |
             release/*.dmg
             release/*.zip
+            release/*.blockmap
 
       - name: Publish to GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
@@ -125,7 +122,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   # ════════════════════════════════════════════════════════
-  # BUILD WINDOWS
+  # BUILD Windows
   # ════════════════════════════════════════════════════════
   build-windows:
     name: Build Windows (.exe)
@@ -140,10 +137,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 22 LTS
+      - name: Setup Node.js 24
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '24'        # ← aggiornato
           cache: 'npm'
 
       - name: Install dependencies
@@ -152,7 +149,7 @@ jobs:
       - name: Build frontend (Vite)
         run: npm run build
 
-      - name: Build Electron TypeScript
+      - name: Build Electron process
         run: npx tsc -p tsconfig.electron.json
         continue-on-error: true
 
@@ -169,7 +166,9 @@ jobs:
         with:
           name: ArtBook-Windows
           retention-days: 30
-          path: release/*.exe
+          path: |
+            release/*.exe
+            release/*.blockmap
 
       - name: Publish to GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
@@ -180,7 +179,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   # ════════════════════════════════════════════════════════
-  # BUILD LINUX
+  # BUILD Linux
   # ════════════════════════════════════════════════════════
   build-linux:
     name: Build Linux (.AppImage)
@@ -195,10 +194,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 22 LTS
+      - name: Setup Node.js 24
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '24'        # ← aggiornato
           cache: 'npm'
 
       - name: Install Linux system dependencies
@@ -217,7 +216,7 @@ jobs:
       - name: Build frontend (Vite)
         run: npm run build
 
-      - name: Build Electron TypeScript
+      - name: Build Electron process
         run: npx tsc -p tsconfig.electron.json
         continue-on-error: true
 
