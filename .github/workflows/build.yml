@@ -1,5 +1,9 @@
 name: Build ArtBook — Multi Platform
 
+# ── Opt-in a Node.js 24 ora (prima che diventi obbligatorio) ─────────────────
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 on:
   push:
     tags:
@@ -36,12 +40,12 @@ jobs:
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4        # versione più recente — supporta Node 24
 
-      - name: Setup Node.js 24
-        uses: actions/setup-node@v4
+      - name: Setup Node.js 22 LTS
+        uses: actions/setup-node@v4      # versione più recente — supporta Node 24
         with:
-          node-version: '24'        # ← aggiornato da 20 a 24
+          node-version: '22'             # Node 22 LTS — stabile e supportato da Electron
           cache: 'npm'
 
       - name: Install dependencies
@@ -81,7 +85,7 @@ jobs:
       - name: Build frontend (Vite)
         run: npm run build
 
-      - name: Build Electron process
+      - name: Build Electron TypeScript
         run: npx tsc -p tsconfig.electron.json
         continue-on-error: true
 
@@ -92,17 +96,17 @@ jobs:
             --arm64 \
             --publish never
         env:
-          GH_TOKEN:                    ${{ secrets.GITHUB_TOKEN }}
-          CSC_IDENTITY_AUTO_DISCOVERY: false
+          GH_TOKEN:                      ${{ secrets.GITHUB_TOKEN }}
+          CSC_IDENTITY_AUTO_DISCOVERY:   false
 
       - name: List release files
         run: ls -la release/
 
       - name: Upload macOS artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4   # versione più recente
         with:
-          name: ArtBook-macOS
-          retention-days: 30
+          name:            ArtBook-macOS
+          retention-days:  30
           path: |
             release/*.dmg
             release/*.zip
@@ -115,14 +119,14 @@ jobs:
           files: |
             release/*.dmg
             release/*.zip
-          name: ArtBook ${{ github.ref_name }}
-          draft: false
+          name:       ArtBook ${{ github.ref_name }}
+          draft:      false
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   # ════════════════════════════════════════════════════════
-  # BUILD Windows
+  # BUILD WINDOWS
   # ════════════════════════════════════════════════════════
   build-windows:
     name: Build Windows (.exe)
@@ -137,10 +141,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 24
+      - name: Setup Node.js 22 LTS
         uses: actions/setup-node@v4
         with:
-          node-version: '24'        # ← aggiornato
+          node-version: '22'
           cache: 'npm'
 
       - name: Install dependencies
@@ -149,7 +153,7 @@ jobs:
       - name: Build frontend (Vite)
         run: npm run build
 
-      - name: Build Electron process
+      - name: Build Electron TypeScript
         run: npx tsc -p tsconfig.electron.json
         continue-on-error: true
 
@@ -164,8 +168,8 @@ jobs:
       - name: Upload Windows artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ArtBook-Windows
-          retention-days: 30
+          name:            ArtBook-Windows
+          retention-days:  30
           path: |
             release/*.exe
             release/*.blockmap
@@ -179,7 +183,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   # ════════════════════════════════════════════════════════
-  # BUILD Linux
+  # BUILD LINUX
   # ════════════════════════════════════════════════════════
   build-linux:
     name: Build Linux (.AppImage)
@@ -194,10 +198,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 24
+      - name: Setup Node.js 22 LTS
         uses: actions/setup-node@v4
         with:
-          node-version: '24'        # ← aggiornato
+          node-version: '22'
           cache: 'npm'
 
       - name: Install Linux system dependencies
@@ -216,7 +220,7 @@ jobs:
       - name: Build frontend (Vite)
         run: npm run build
 
-      - name: Build Electron process
+      - name: Build Electron TypeScript
         run: npx tsc -p tsconfig.electron.json
         continue-on-error: true
 
@@ -228,8 +232,8 @@ jobs:
       - name: Upload Linux artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ArtBook-Linux
-          retention-days: 30
+          name:            ArtBook-Linux
+          retention-days:  30
           path: |
             release/*.AppImage
             release/*.deb
