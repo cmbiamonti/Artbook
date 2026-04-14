@@ -1,11 +1,9 @@
 name: Build ArtBook — Multi Platform
 
 on:
-  # Si attiva quando spingi un tag tipo v1.0.0
   push:
     tags:
       - 'v*'
-  # Permette avvio manuale dalla pagina GitHub Actions
   workflow_dispatch:
     inputs:
       platform:
@@ -19,14 +17,17 @@ on:
           - windows
           - linux
 
-# ── Permessi per caricare i file nella Release GitHub ──────────────────────────
+# ── Opt-in esplicito a Node.js 24 ────────────────────────────────────────────
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 permissions:
   contents: write
 
 jobs:
 
   # ════════════════════════════════════════════════════════
-  # BUILD macOS — runner Apple Silicon hosted da GitHub
+  # BUILD macOS
   # ════════════════════════════════════════════════════════
   build-mac:
     name: Build macOS (.dmg)
@@ -38,22 +39,18 @@ jobs:
 
     steps:
 
-      # 1. Scarica il codice dal repository
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4        # versione più recente
 
-      # 2. Installa Node.js 20
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup Node.js 22 LTS
+        uses: actions/setup-node@v4      # versione più recente
         with:
-          node-version: '20'
+          node-version: '22'             # LTS stabile, supportato a lungo
           cache: 'npm'
 
-      # 3. Installa le dipendenze npm
       - name: Install dependencies
         run: npm ci
 
-      # 4. Genera icon.icns da icon.png
       - name: Generate macOS icon (.icns)
         run: |
           mkdir -p /tmp/artbook.iconset
@@ -85,16 +82,13 @@ jobs:
           echo "✅ icon.icns generato"
           ls -la build/icons/
 
-      # 5. Compila TypeScript + Vite (frontend)
       - name: Build frontend (Vite)
         run: npm run build
 
-      # 6. Compila TypeScript Electron (main + preload)
-      - name: Build Electron
+      - name: Build Electron TypeScript
         run: npx tsc -p tsconfig.electron.json
         continue-on-error: true
 
-      # 7. Crea il .dmg con electron-builder
       - name: Package macOS .dmg
         run: |
           npx electron-builder --mac \
@@ -102,15 +96,12 @@ jobs:
             --arm64 \
             --publish never
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Build non firmata — nessun certificato Apple richiesto
+          GH_TOKEN:                    ${{ secrets.GITHUB_TOKEN }}
           CSC_IDENTITY_AUTO_DISCOVERY: false
 
-      # 8. Mostra i file generati
       - name: List release files
         run: ls -la release/
 
-      # 9. Carica i file come artifact scaricabile
       - name: Upload macOS artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -119,9 +110,7 @@ jobs:
           path: |
             release/*.dmg
             release/*.zip
-            release/*.blockmap
 
-      # 10. Se è un tag, pubblica nella GitHub Release
       - name: Publish to GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
@@ -136,7 +125,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   # ════════════════════════════════════════════════════════
-  # BUILD WINDOWS — runner Windows hosted da GitHub
+  # BUILD WINDOWS
   # ════════════════════════════════════════════════════════
   build-windows:
     name: Build Windows (.exe)
@@ -151,10 +140,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node.js 22 LTS
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
 
       - name: Install dependencies
@@ -163,7 +152,7 @@ jobs:
       - name: Build frontend (Vite)
         run: npm run build
 
-      - name: Build Electron
+      - name: Build Electron TypeScript
         run: npx tsc -p tsconfig.electron.json
         continue-on-error: true
 
@@ -180,9 +169,7 @@ jobs:
         with:
           name: ArtBook-Windows
           retention-days: 30
-          path: |
-            release/*.exe
-            release/*.blockmap
+          path: release/*.exe
 
       - name: Publish to GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
@@ -193,7 +180,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   # ════════════════════════════════════════════════════════
-  # BUILD LINUX — runner Ubuntu hosted da GitHub
+  # BUILD LINUX
   # ════════════════════════════════════════════════════════
   build-linux:
     name: Build Linux (.AppImage)
@@ -208,13 +195,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node.js 22 LTS
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
 
-      - name: Install Linux dependencies
+      - name: Install Linux system dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y \
@@ -230,7 +217,7 @@ jobs:
       - name: Build frontend (Vite)
         run: npm run build
 
-      - name: Build Electron
+      - name: Build Electron TypeScript
         run: npx tsc -p tsconfig.electron.json
         continue-on-error: true
 
