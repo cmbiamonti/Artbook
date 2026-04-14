@@ -23,11 +23,7 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
 
-    /* ✅ AGGIUNGI QUESTO */
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    }
+  
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
