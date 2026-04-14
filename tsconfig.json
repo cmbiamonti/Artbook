@@ -22,8 +22,11 @@
     
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-
-  
+    
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
