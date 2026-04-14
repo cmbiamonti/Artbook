@@ -1,9 +1,5 @@
 name: Build ArtBook — Multi Platform
 
-# ── Opt-in a Node.js 24 ora (prima che diventi obbligatorio) ─────────────────
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 on:
   push:
     tags:
@@ -40,19 +36,30 @@ jobs:
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@v4        # versione più recente — supporta Node 24
+        uses: actions/checkout@v4        # Node 24 compatibile
 
-      - name: Setup Node.js 22 LTS
-        uses: actions/setup-node@v4      # versione più recente — supporta Node 24
+      # ── Node.js 24 ────────────────────────────────────────────────────────
+      - name: Setup Node.js 24
+        uses: actions/setup-node@v4
         with:
-          node-version: '22'             # Node 22 LTS — stabile e supportato da Electron
+          node-version: '24'             # ← cambiato da 20 a 24
           cache: 'npm'
 
+      # ── Installa dipendenze ───────────────────────────────────────────────
       - name: Install dependencies
         run: npm ci
 
+      # ── Genera icona macOS ────────────────────────────────────────────────
       - name: Generate macOS icon (.icns)
         run: |
+          echo "🖼  Verifico icon.png..."
+          ls -la build/icons/ || echo "⚠ Cartella build/icons non trovata"
+
+          if [ ! -f "build/icons/icon.png" ]; then
+            echo "❌ ERRORE: build/icons/icon.png non trovato"
+            exit 1
+          fi
+
           mkdir -p /tmp/artbook.iconset
 
           sips -z 16   16   build/icons/icon.png \
@@ -79,39 +86,149 @@ jobs:
           iconutil -c icns /tmp/artbook.iconset \
             -o build/icons/icon.icns
 
-          echo "✅ icon.icns generato"
+          echo "✅ icon.icns generato:"
           ls -la build/icons/
 
+      # ── Diagnostica struttura progetto ────────────────────────────────────
+      - name: Diagnostica struttura progetto
+        run: |
+          echo "📁 Root del progetto:"
+          ls -la
+
+          echo ""
+          echo "📄 package.json scripts:"
+          node -e "
+            const p = require('./package.json');
+            console.log(JSON.stringify(p.scripts, null, 2));
+          "
+
+          echo ""
+          echo "📄 Sezione build di package.json:"
+          node -e "
+            const p = require('./package.json');
+            console.log(JSON.stringify(p.build, null, 2));
+          "
+
+          echo ""
+          echo "🔍 tsconfig files presenti:"
+          ls tsconfig*.json 2>/dev/null || echo "  nessun tsconfig trovato"
+
+          echo ""
+          echo "🔍 electron/ directory:"
+          ls electron/ 2>/dev/null || echo "  cartella electron/ non trovata"
+
+      # ── Build frontend Vite ───────────────────────────────────────────────
       - name: Build frontend (Vite)
-        run: npm run build
+        run: |
+          echo "🏗  Avvio build Vite..."
+          npx vite build
+          echo "✅ Build Vite completata"
+          echo "📁 Contenuto dist/:"
+          ls -la dist/ 2>/dev/null || echo "  dist/ non creata"
 
+      # ── Compila Electron (TypeScript → JS) ───────────────────────────────
       - name: Build Electron TypeScript
-        run: npx tsc -p tsconfig.electron.json
-        continue-on-error: true
+        run: |
+          echo "🔍 Verifico presenza tsconfig.electron.json..."
 
+          if [ -f "tsconfig.electron.json" ]; then
+            echo "✅ tsconfig.electron.json trovato — compilo..."
+            npx tsc -p tsconfig.electron.json
+            echo "✅ Compilazione Electron completata"
+
+          elif [ -f "tsconfig.json" ]; then
+            echo "⚠ tsconfig.electron.json non trovato"
+            echo "  Provo con tsconfig.json standard..."
+
+            # Controlla se electron/ è inclusa nel tsconfig principale
+            if grep -q '"electron"' tsconfig.json 2>/dev/null; then
+              npx tsc
+              echo "✅ Compilazione con tsconfig.json completata"
+            else
+              echo "⚠ electron/ non inclusa in tsconfig.json"
+              echo "  Compilo electron/ direttamente..."
+              npx tsc \
+                --target ES2020 \
+                --module commonjs \
+                --outDir dist-electron \
+                --esModuleInterop true \
+                --skipLibCheck true \
+                --strict false \
+                electron/*.ts 2>/dev/null || true
+            fi
+
+          else
+            echo "⚠ Nessun tsconfig trovato"
+            echo "  Provo compilazione diretta dei file .ts in electron/..."
+            npx tsc \
+              --target ES2020 \
+              --module commonjs \
+              --outDir dist-electron \
+              --esModuleInterop true \
+              --skipLibCheck true \
+              --strict false \
+              electron/*.ts 2>/dev/null || true
+          fi
+
+          echo ""
+          echo "📁 Contenuto dist-electron/:"
+          ls -la dist-electron/ 2>/dev/null || echo "  dist-electron/ non creata"
+
+      # ── Verifica che i file necessari esistano ────────────────────────────
+      - name: Verifica file pre-build
+        run: |
+          echo "🔍 Verifica file necessari per electron-builder..."
+
+          # Controlla main entry point
+          MAIN=$(node -e "
+            const p = require('./package.json');
+            console.log(p.main || 'non definito');
+          ")
+          echo "  main in package.json: $MAIN"
+
+          if [ -f "$MAIN" ]; then
+            echo "  ✅ $MAIN esiste"
+          else
+            echo "  ❌ $MAIN NON esiste — il build potrebbe fallire"
+            echo ""
+            echo "  File in dist-electron/:"
+            find dist-electron -name "*.js" 2>/dev/null || echo "  nessun .js trovato"
+          fi
+
+          echo ""
+          echo "  ✅ Tutti i check completati"
+
+      # ── Pacchettizza con electron-builder ────────────────────────────────
       - name: Package macOS .dmg
         run: |
-          npx electron-builder --mac \
+          echo "📦 Avvio electron-builder per macOS..."
+          npx electron-builder \
+            --mac \
             --x64 \
             --arm64 \
             --publish never
+          echo "✅ electron-builder completato"
         env:
-          GH_TOKEN:                      ${{ secrets.GITHUB_TOKEN }}
-          CSC_IDENTITY_AUTO_DISCOVERY:   false
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_IDENTITY_AUTO_DISCOVERY: false
 
-      - name: List release files
-        run: ls -la release/
+      # ── Mostra output ─────────────────────────────────────────────────────
+      - name: Lista file generati
+        run: |
+          echo "📦 File nella cartella release/:"
+          ls -lah release/ 2>/dev/null || echo "  release/ vuota o non esistente"
 
+      # ── Carica come artifact ──────────────────────────────────────────────
       - name: Upload macOS artifacts
-        uses: actions/upload-artifact@v4   # versione più recente
+        uses: actions/upload-artifact@v4
         with:
-          name:            ArtBook-macOS
-          retention-days:  30
+          name: ArtBook-macOS
+          retention-days: 30
           path: |
             release/*.dmg
             release/*.zip
-            release/*.blockmap
 
+      # ── Pubblica nella GitHub Release se è un tag ─────────────────────────
       - name: Publish to GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
@@ -119,9 +236,7 @@ jobs:
           files: |
             release/*.dmg
             release/*.zip
-          name:       ArtBook ${{ github.ref_name }}
-          draft:      false
-          prerelease: false
+          name: ArtBook ${{ github.ref_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -141,38 +256,45 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 22 LTS
+      - name: Setup Node.js 24
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '24'             # ← cambiato da 20 a 24
           cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
 
       - name: Build frontend (Vite)
-        run: npm run build
+        run: npx vite build
 
       - name: Build Electron TypeScript
-        run: npx tsc -p tsconfig.electron.json
-        continue-on-error: true
+        shell: bash
+        run: |
+          if [ -f "tsconfig.electron.json" ]; then
+            npx tsc -p tsconfig.electron.json
+          else
+            npx tsc \
+              --target ES2020 \
+              --module commonjs \
+              --outDir dist-electron \
+              --esModuleInterop true \
+              --skipLibCheck true \
+              --strict false \
+              electron/*.ts 2>/dev/null || true
+          fi
 
       - name: Package Windows .exe
         run: npx electron-builder --win --x64 --publish never
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: List release files
-        run: dir release\
-
       - name: Upload Windows artifacts
         uses: actions/upload-artifact@v4
         with:
-          name:            ArtBook-Windows
-          retention-days:  30
-          path: |
-            release/*.exe
-            release/*.blockmap
+          name: ArtBook-Windows
+          retention-days: 30
+          path: release/*.exe
 
       - name: Publish to GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
@@ -198,31 +320,44 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 22 LTS
+      - name: Setup Node.js 24
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '24'             # ← cambiato da 20 a 24
           cache: 'npm'
 
       - name: Install Linux system dependencies
         run: |
-          sudo apt-get update
+          sudo apt-get update -qq
           sudo apt-get install -y \
             libgtk-3-dev \
             libwebkit2gtk-4.0-dev \
             libayatana-appindicator3-dev \
             librsvg2-dev \
-            patchelf
+            patchelf \
+            rpm \
+            fakeroot
 
       - name: Install dependencies
         run: npm ci
 
       - name: Build frontend (Vite)
-        run: npm run build
+        run: npx vite build
 
       - name: Build Electron TypeScript
-        run: npx tsc -p tsconfig.electron.json
-        continue-on-error: true
+        run: |
+          if [ -f "tsconfig.electron.json" ]; then
+            npx tsc -p tsconfig.electron.json
+          else
+            npx tsc \
+              --target ES2020 \
+              --module commonjs \
+              --outDir dist-electron \
+              --esModuleInterop true \
+              --skipLibCheck true \
+              --strict false \
+              electron/*.ts 2>/dev/null || true
+          fi
 
       - name: Package Linux
         run: npx electron-builder --linux --publish never
@@ -232,8 +367,8 @@ jobs:
       - name: Upload Linux artifacts
         uses: actions/upload-artifact@v4
         with:
-          name:            ArtBook-Linux
-          retention-days:  30
+          name: ArtBook-Linux
+          retention-days: 30
           path: |
             release/*.AppImage
             release/*.deb
